@@ -63,8 +63,10 @@ Para iniciar a aplicação insira o seguinte comando
 ###### Adicionando arquivos no container
 1. Acesse o prompt
 2. Verifique o nome do container da imagem criada
->$ docker ps
+>$ docker ps</br>
+
 O container está destacado pelo **NAME** da **IMAGE** processador-analise-vendas
+
 3. Copie arquivos do diretório local para o container
 >$ docker cp <diretorio_local>\teste8.txt <container_name>:/root/data/in
 
