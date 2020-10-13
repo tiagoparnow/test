@@ -2,6 +2,8 @@ package com.analise.vendas.utils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -162,26 +164,40 @@ public final class ProcessingApplicationUtils {
 	 * @param diretorio
 	 */
 	public static void validaDiretorio(final File diretorio) {
+		if (!diretorio.exists()) {
+			criarDiretorio(diretorio);
+		}
+
 		assertTrue(diretorio.isDirectory(),
 				   new StringBuilder()
 				   		.append("O caminho \" ")
 				   		.append(diretorio.getAbsolutePath())
 				   		.append(" \" não é um diretório.")
 				   		.toString());
-
-		assertTrue(diretorio.exists(),
-				   new StringBuilder()
-				   		.append("O diretório \" ")
-				   		.append(diretorio.getAbsolutePath())
-				   		.append(" \" não existe.")
-				   		.toString());
-
+		
 		assertTrue(diretorio.canRead() && diretorio.canWrite(),
 				   new StringBuilder()
 				   		.append("Permissões negadas no diretório \" ")
 				   		.append(diretorio.getAbsolutePath())
 				   		.append(" \".")
 				   		.toString());
+	}
+	
+	/**
+	 * Cria os diretorios padroes de entrada ou saida
+	 * caso nao existam
+	 * 
+	 * @param diretorio
+	 */
+	private static void criarDiretorio(final File diretorio) {
+		Path path = Paths.get(diretorio.getPath());
+		try {
+			Files.createDirectories(path);
+		} catch (IOException e) {
+			throw new ProcessingApplicationException(new StringBuilder().append("Não foi possível criar diretório \" ")
+			   															.append(diretorio.getAbsolutePath())
+			   															.toString());
+		}
 	}
 	
 	/**

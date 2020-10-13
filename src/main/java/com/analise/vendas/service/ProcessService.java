@@ -1,9 +1,11 @@
 package com.analise.vendas.service;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,29 +37,50 @@ public class ProcessService extends FileService {
 	}
 	
 	private void processResult(File arquivo) {
+		log.info(new StringBuilder().append("Processando arquivo: ")
+									.append(arquivo.getName())
+									.toString());
+		List<String> lines = this.readAllLines(arquivo);
+		
+		ResultDTO result = ResultService.create().buildResult(lines);
+		
+		this.createResultFile(result, arquivo);
+		
+		if (CollectionUtils.isNotEmpty(result.getErrors())) {
+			this.createResultFileError(result, arquivo);
+		}
+		
+		log.info(new StringBuilder().append("Processamento do arquivo: ")
+									.append(arquivo.getName())
+									.append(" concluído")
+									.toString());
+	}
+	
+	private List<String> readAllLines(File arquivo) {
+		List<String> lines = new ArrayList<String>();
+		BufferedReader br = null;
 		try {
-			log.info(new StringBuilder().append("Processando arquivo: ")
-										.append(arquivo.getName())
-										.toString());
-			List<String> lines = Files.readAllLines(arquivo.toPath());
-			
-			ResultDTO result = ResultService.create().buildResult(lines);
-			
-			this.createResultFile(result, arquivo);
-			
-			if (CollectionUtils.isNotEmpty(result.getErrors())) {
-				this.createResultFileError(result, arquivo);
+			br = Files.newBufferedReader(arquivo.toPath());
+			String s;
+			while ((s = br.readLine()) != null) {
+				lines.add(s);
 			}
-			
-			log.info(new StringBuilder().append("Processamento do arquivo: ")
-										.append(arquivo.getName())
-										.append(" concluído")
-										.toString());
 		} catch (IOException e) {
 			throw new ProcessingApplicationException(new StringBuilder().append("Erro na leitura do arquivo: ")
 																		.append(e.getMessage())
 																		.toString());
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException e) {
+				throw new ProcessingApplicationException(new StringBuilder().append("Erro na leitura do arquivo: ")
+																			.append(e.getMessage())
+																			.toString());
+			}
 		}
+		return lines;
 	}
 	
 	private void createResultFile(ResultDTO result, File arquivo) {
