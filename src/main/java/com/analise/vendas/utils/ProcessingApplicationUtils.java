@@ -132,7 +132,7 @@ public final class ProcessingApplicationUtils {
 	 */
 	public static Path getResultPathProcess(File arquivo) {
 		return Paths.get(getOutputPath())
-					.resolve(StringUtils.replace(arquivo.getName(), 
+					.resolve(StringUtils.replace(arquivo.getName().toLowerCase(), 
 												 ConstantesProcessingApplicationUtils.EXTENSAO.PONTO_TXT.toLowerCase(), 
 												 new StringBuilder().append(ConstantesProcessingApplicationUtils.ARQUIVO.PROCESS)
 												 		            .append(ConstantesProcessingApplicationUtils.EXTENSAO.PONTO_TXT.toLowerCase())
@@ -149,7 +149,7 @@ public final class ProcessingApplicationUtils {
 	 */
 	public static Path getResultPathError(File arquivo) {
 		return Paths.get(getOutputPath())
-					.resolve(StringUtils.replace(arquivo.getName(), 
+					.resolve(StringUtils.replace(arquivo.getName().toLowerCase(), 
 												 ConstantesProcessingApplicationUtils.EXTENSAO.PONTO_TXT.toLowerCase(), 
 												 new StringBuilder().append(ConstantesProcessingApplicationUtils.ARQUIVO.ERROR)
 												 		            .append(ConstantesProcessingApplicationUtils.EXTENSAO.PONTO_TXT.toLowerCase())
