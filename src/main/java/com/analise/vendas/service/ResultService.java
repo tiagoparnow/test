@@ -33,6 +33,12 @@ public class ResultService {
 		return new ResultService();
 	}
 	
+	/**
+	 * Analisa os dados do arquivo, retornando o resultado da analise
+	 * 
+	 * @param lines
+	 * @return ResultDTO
+	 */
 	public ResultDTO buildResult(List<String> lines) {
 		lines.stream()
 			 .forEach(line -> process(line));
@@ -44,6 +50,13 @@ public class ResultService {
 								 .withErrors(errors);
 	}
 	
+	/**
+	 * Processa a linha do arquivo, gerando seus registros de acordo
+	 * com seu identificador. Os erros serao registrados para que
+	 * a analise nao termine.
+	 * 
+	 * @param line
+	 */
 	public void process(String line) {
         try {
         	ServiceClient register = getService(line);
@@ -59,6 +72,13 @@ public class ResultService {
 		}
     }
 	
+	/**
+	 * Retorna a service de acordo com o identificador da linha
+	 * atraves do mapeamento do dominio.
+	 * 
+	 * @param line
+	 * @return ServiceClient
+	 */
 	private ServiceClient getService(String line) {
 		DomainLineId tipo = DomainLineId.find(StringUtils.substring(line, 0, 3));
 		ServiceClient service = null;
@@ -79,18 +99,33 @@ public class ResultService {
         return service;
     }
 	
+	/**
+	 * Retorna a quantidade total de clientes
+	 * 
+	 * @return Long
+	 */
 	private Long getQuantityClients() {
         return registers.stream()
                 		.filter(entity -> entity instanceof Client)
                 		.count();
     }
 	
+	/**
+	 * Retorna a quantidade total de vendedores
+	 * 
+	 * @return Long
+	 */
 	private Long getQuantitySalesman() {
         return registers.stream()
                 		.filter(entity -> entity instanceof Salesman)
                 		.count();
     }
 	
+	/**
+	 * Retorna o identificador da venda mais cara
+	 * 
+	 * @return Long
+	 */
 	private Long getMostExpensiveSaleId() {
 		BigDecimal mostExpensivePrice = BigDecimal.ZERO;
 		Long mostExpensiveSaleId = 0L;
@@ -105,6 +140,11 @@ public class ResultService {
 		return mostExpensiveSaleId;
 	}
 	
+	/**
+	 * Retorna o nome do pior vendedor
+	 * 
+	 * @return String
+	 */
 	public String getWorstSalesman(){
         List<Sale> sales = getSales();
         if (CollectionUtils.isEmpty(sales)) {
@@ -122,6 +162,12 @@ public class ResultService {
         return worstSale.getSalesmanName();
     }
 	
+	/**
+	 * Somatorio da venda
+	 * 
+	 * @param sale
+	 * @return BigDecimal
+	 */
 	private BigDecimal getTotal(Sale sale) {
         return sale.getItems().stream()
         					  .map(Item::getPrice)
@@ -129,6 +175,11 @@ public class ResultService {
         					  .get();
     }
 	
+	/**
+	 * Retorna vendas
+	 * 
+	 * @return List<Sale>
+	 */
 	public List<Sale> getSales() {
         return registers.stream()
                 .filter(reg -> reg instanceof Sale)

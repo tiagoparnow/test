@@ -29,6 +29,8 @@ public class ProcessService extends FileService {
 			arquivos.stream().forEach(arquivo -> {
 				processResult(arquivo);
 			});
+		} else {
+			log.info(new StringBuilder().append("Não existem arquivos no diretório para processamento.").toString());
 		}
 	}
 	

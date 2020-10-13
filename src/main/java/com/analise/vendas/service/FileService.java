@@ -16,6 +16,9 @@ public abstract class FileService extends AbstractService {
 
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
 	
+	/**
+	 * Metodo responsavel em inicializar o processamento dos arquivos
+	 */
 	public static void run() {
 		final File diretorioInput = getPathDiretorioInput();
 		validarPathDiretorioOutput();
@@ -36,6 +39,11 @@ public abstract class FileService extends AbstractService {
 	    
 	}
 	
+	/**
+	 * Retorna o diretorio de entrada
+	 * 
+	 * @return File
+	 */
 	private static File getPathDiretorioInput() {
 		try {
 			return ProcessingApplicationUtils.getDiretorioIn();
@@ -47,6 +55,9 @@ public abstract class FileService extends AbstractService {
 		}
 	}
 	
+	/**
+	 * Validar o diretorio de saida
+	 */
 	private static void validarPathDiretorioOutput() {
 		try {
 			ProcessingApplicationUtils.getDiretorioOut();
@@ -58,6 +69,14 @@ public abstract class FileService extends AbstractService {
 		}
 	}
 	
+	/**
+	 * Filtra os arquivos nao processados atraves da pasta de entrada.
+	 * Exemplo: o arquivo data/in/arquivo.txt nao pode estar
+	 * como processado em data/out/arquivo_process.txt
+	 * 
+	 * @param files
+	 * @return List<File>
+	 */
 	private static List<File> filterFilesNotProcess(final List<File> files) {
 		return files.stream()
 					.filter(f -> !ProcessingApplicationUtils.getArquivosProcessados().contains(f.getName().toLowerCase()))

@@ -15,6 +15,11 @@ import com.analise.vendas.exception.ProcessingApplicationException;
 
 public final class ProcessingApplicationUtils {
 
+	/**
+	 * Lista os arquivos no diretório de entrada: HOMEPATH/data/in
+	 * 
+	 * @return List<String>
+	 */
 	public static List<String> getArquivos() {
 		return Arrays.asList(getDiretorioIn().listFiles(getfileFilter()))
 					 .stream()
@@ -23,6 +28,12 @@ public final class ProcessingApplicationUtils {
 					 .collect(Collectors.toList());
 	}
 	
+	/**
+	 * Lista os arquivos processados com seu nome original:
+	 * arquivo_process.txt > arquivo.txt
+	 * 
+	 * @return List<String>
+	 */
 	public static List<String> getArquivosProcessados() {
 		return Arrays.asList(getDiretorioOut().listFiles(getfileFilter()))
 					 .stream()
@@ -34,6 +45,11 @@ public final class ProcessingApplicationUtils {
 					 .collect(Collectors.toList());
 	}
 	
+	/**
+	 * Retorna os arquivos com a extensao txt
+	 * 
+	 * @return FileFilter
+	 */
 	public static FileFilter getfileFilter() {
 		return new FileFilter() {
 			public boolean accept(final File file) {
@@ -42,6 +58,11 @@ public final class ProcessingApplicationUtils {
 		};
 	}
 	
+	/**
+	 * Retorna os arquivos processados (arquivo_process) com a extensao txt
+	 * 
+	 * @return FileFilter
+	 */
 	public static FileFilter getFileFilterProcess() {
 		return new FileFilter() {
 			public boolean accept(final File file) {
@@ -53,18 +74,33 @@ public final class ProcessingApplicationUtils {
 		};
 	}
 	
+	/**
+	 * Retorna File da pasta de entrada HOMEPATH/data/in
+	 * 
+	 * @return File
+	 */
 	public static File getDiretorioIn() {
 		final File diretorio = new File(getInputPath());
 		validaDiretorio(diretorio);
 		return diretorio;
 	}
 	
+	/**
+	 * Retorna File da pasta de saida HOMEPATH/data/out
+	 * 
+	 * @return File
+	 */
 	public static File getDiretorioOut() {
 		final File diretorio = new File(getOutputPath());
 		validaDiretorio(diretorio);
 		return diretorio;
 	}
 	
+	/**
+	 * Pasta de entrada HOMEPATH/data/in
+	 * 
+	 * @return String
+	 */
 	public static String getInputPath() {
 		return System.getProperty("user.home")
 					 .concat(File.separator)
@@ -73,6 +109,11 @@ public final class ProcessingApplicationUtils {
 					 .concat("in");
 	}
 	
+	/**
+	 * Pasta de saida HOMEPATH/data/out
+	 * 
+	 * @return String
+	 */
 	public static String getOutputPath() {
 		return System.getProperty("user.home")
 					 .concat(File.separator)
@@ -81,6 +122,14 @@ public final class ProcessingApplicationUtils {
 					 .concat("out");
 	}
 	
+	/**
+	 * Retorna o path do arquivo a ser gerado como processado.
+	 * Neste caso o sistema ira atribuir o sufixo de _process
+	 * ao nome do arquivo orginal
+	 * 
+	 * @param arquivo
+	 * @return Path
+	 */
 	public static Path getResultPathProcess(File arquivo) {
 		return Paths.get(getOutputPath())
 					.resolve(StringUtils.replace(arquivo.getName(), 
@@ -90,6 +139,14 @@ public final class ProcessingApplicationUtils {
 												 		            .toString()));
 	}
 	
+	/**
+	 * Retorna o path do arquivo a ser gerado com erro.
+	 * Neste caso o sistema ira atribuir o sufixo de _error
+	 * ao nome do arquivo orginal
+	 * 
+	 * @param arquivo
+	 * @return Path
+	 */
 	public static Path getResultPathError(File arquivo) {
 		return Paths.get(getOutputPath())
 					.resolve(StringUtils.replace(arquivo.getName(), 
@@ -99,6 +156,11 @@ public final class ProcessingApplicationUtils {
 												 		            .toString()));
 	}
 	
+	/**
+	 * Validacoes dos diretorios que a aplicacao ira processar
+	 * 
+	 * @param diretorio
+	 */
 	public static void validaDiretorio(final File diretorio) {
 		assertTrue(diretorio.isDirectory(),
 				   new StringBuilder()
@@ -122,6 +184,15 @@ public final class ProcessingApplicationUtils {
 				   		.toString());
 	}
 	
+	/**
+	 * Validacoes de objetos nao nulos, quando objeto for null
+	 * uma excecao da aplicacao sera criada
+	 * 
+	 * @param object
+	 * @param message
+	 * @param args
+	 * @return
+	 */
 	public static <T> T assertNotNull(T object, String message, Object... args) {
 		if (Objects.isNull(object)) {
 			throw new ProcessingApplicationException(args != null && args.length > 0 ? String.format(message, args) : message);
@@ -130,6 +201,14 @@ public final class ProcessingApplicationUtils {
 		return object;
 	}
 
+	/**
+	 * Validacoes de condicao verdade, quando objeto for false
+	 * uma excecao da aplicacao sera criada
+	 * 
+	 * @param expression
+	 * @param message
+	 * @param args
+	 */
 	public static void assertTrue(boolean expression, String message, Object... args) {
 		if (!expression) {
 			throw new ProcessingApplicationException(args != null && args.length > 0 ? String.format(message, args) : message);
